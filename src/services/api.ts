@@ -1,5 +1,7 @@
 import config from "../config";
-import { create } from "apisauce";
-export const restApi = create({
+import axios from "axios";
+export const api = axios.create({
   baseURL: config.baseURL,
+  
 });
+export default api;
