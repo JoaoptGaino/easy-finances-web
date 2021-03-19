@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Landing = () => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
@@ -48,6 +48,7 @@ const Landing = () => {
     await api
       .post("/authentication", { email, password, strategy: "local" })
       .then((response) => {
+        console.log(response);
         localStorage.setItem("authTokenFinance", response.data.accessToken);
         history.push("/transactions/list");
       })
@@ -114,4 +115,4 @@ const Landing = () => {
   );
 };
 
-export default Landing;
+export default Login;

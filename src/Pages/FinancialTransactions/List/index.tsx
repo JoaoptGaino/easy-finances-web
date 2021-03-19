@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from "react";
 import {
+  Button,
   Grid,
   List,
   ListItem,
   ListItemText,
+  makeStyles,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
+  Theme,
   Typography,
 } from "@material-ui/core";
 import api from "../../../services/api";
 import { Title } from "@material-ui/icons";
+import { logout } from "../../../Utils/rules";
+import Navbar from "../../../Components/Navbar";
 interface TransactionInterface {
   id: number;
   createdAt: string;
@@ -23,8 +28,17 @@ interface TransactionInterface {
     description: string;
   };
 }
+const useStyles = makeStyles((theme: Theme) => ({
+  outcome: {
+    backgroundColor: theme.palette.error.main,
+  },
+  income: {
+    backgroundColor: theme.palette.success.main,
+  },
+}));
 const FinancialTransactionList = () => {
   const [transaction, setTransaction] = useState<TransactionInterface[]>([]);
+  const classes = useStyles();
   useEffect(() => {
     async function getData() {
       await api
@@ -45,6 +59,7 @@ const FinancialTransactionList = () => {
   }, []);
   return (
     <>
+      <Navbar name={"Transactions List"} />
       <Table size="medium">
         <TableHead>
           <TableRow>
@@ -55,23 +70,21 @@ const FinancialTransactionList = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {transaction.map((item) =>
-            item.TransactionType.description === "Outcome" ? (
-              <TableRow key={item.id} style={{ backgroundColor: "red" }}>
-                <TableCell>{item.createdAt}</TableCell>
-                <TableCell>{item.description}</TableCell>
-                <TableCell>R${item.value}</TableCell>
-                <TableCell>{item.TransactionType.description}</TableCell>
-              </TableRow>
-            ) : (
-              <TableRow key={item.id} style={{ backgroundColor: "green" }}>
-                <TableCell>{item.createdAt}</TableCell>
-                <TableCell>{item.description}</TableCell>
-                <TableCell>R${item.value}</TableCell>
-                <TableCell>{item.TransactionType.description}</TableCell>
-              </TableRow>
-            )
-          )}
+          {transaction.map((item) => (
+            <TableRow
+              key={item.id}
+              className={
+                item.TransactionType.description === "Outcome"
+                  ? classes.outcome
+                  : classes.income
+              }
+            >
+              <TableCell>{item.createdAt}</TableCell>
+              <TableCell>{item.description}</TableCell>
+              <TableCell>R${item.value}</TableCell>
+              <TableCell>{item.TransactionType.description}</TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </>
